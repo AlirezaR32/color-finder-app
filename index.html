@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="رنگ‌یاب">
+<meta name="theme-color" content="#14151A">
+<meta name="description" content="تشخیص رنگ با دوربین و نام‌گذاری دقیق آن به فارسی و انگلیسی با الگوریتم CIEDE2000">
+<title>رنگ‌یاب · Color Finder</title>
+
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<div class="app">
+
+  <div class="viewfinder" id="viewfinder">
+    <video id="video" autoplay playsinline muted></video>
+    <canvas id="canvas" style="display:none;"></canvas>
+    <div class="scrim scrim-top"></div>
+    <div class="scrim scrim-bottom"></div>
+
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-fa">رنگ‌یاب</span>
+        <span class="brand-en">COLOR FINDER</span>
+      </div>
+      <button class="icon-btn" id="flipBtn" aria-label="تغییر دوربین">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/>
+          <path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/>
+        </svg>
+      </button>
+    </header>
+
+    <div class="reticle" id="reticle">
+      <span class="bracket tl"></span><span class="bracket tr"></span>
+      <span class="bracket bl"></span><span class="bracket br"></span>
+      <span class="dot"></span>
+    </div>
+
+    <div class="permission-overlay" id="permOverlay" hidden>
+      <div class="perm-card">
+        <p class="perm-title">دسترسی به دوربین لازم است</p>
+        <p class="perm-sub">CAMERA ACCESS REQUIRED</p>
+        <p class="perm-detail" id="permDetail">برای تشخیص رنگ، اجازهٔ دسترسی به دوربین را در مرورگر بدهید.</p>
+        <button class="retry-btn" id="retryBtn">تلاش دوباره</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="tray">
+    <div class="tray-edge"></div>
+    <div class="tray-body">
+
+      <div class="readout">
+        <div class="swatches">
+          <div class="swatch swatch-main" id="swatchMain"></div>
+          <div class="swatch swatch-raw" id="swatchRaw"></div>
+        </div>
+        <div class="names">
+          <div class="name-fa" id="nameFa">در حال خواندن…</div>
+          <div class="name-en" id="nameEn">Reading…</div>
+          <div class="match-row">
+            <div class="meter" id="meter">
+              <span></span><span></span><span></span><span></span><span></span>
+            </div>
+            <span class="match-label" id="matchLabel">—</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="data-row">
+        <span class="data-chip"><span class="data-k">HEX</span><span class="data-v" id="hexVal">—</span></span>
+        <span class="data-chip"><span class="data-k">RGB</span><span class="data-v" id="rgbVal">—</span></span>
+        <span class="data-chip"><span class="data-k">ΔE 2000</span><span class="data-v" id="deVal">—</span></span>
+      </div>
+
+      <div class="controls">
+        <button class="side-btn" id="liveToggle">
+          <span class="dot-live"></span>
+          <span class="st-fa">زنده</span><span class="st-en">LIVE</span>
+        </button>
+        <button class="shutter" id="shutterBtn" aria-label="ثبت رنگ"></button>
+        <button class="side-btn" id="histToggle">
+          <span class="st-fa">سابقه</span><span class="st-en">HISTORY</span>
+        </button>
+      </div>
+
+      <div class="history collapsed" id="history">
+        <p class="history-hint">نشانگر وسط را روی رنگ مدنظر بگیرید؛ با دکمهٔ شاتر، رنگ‌ها اینجا ذخیره می‌شوند.</p>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script src="js/colors.js"></script>
+<script src="js/app.js"></script>
+<script>
+  if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('sw.js').catch(() => {
+        /* offline caching is a bonus feature — fail silently if unsupported */
+      });
+    });
+  }
+</script>
+</body>
+</html>
