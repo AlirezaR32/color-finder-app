@@ -3,8 +3,8 @@
  * ------------------------------------------------------------
  * Responsible for:
  *   1) A curated bilingual (Persian/English) color-name dataset:
- *      49 hand-named base hues, each expanded into 5 lightness/
- *      saturation variants (very light, light, base, dark, very dark).
+ *      A curated set of hand-named base hues, each expanded into
+ *      lightness/saturation variants for stronger real-world matching.
  *   2) sRGB -> CIE Lab conversion (D65 illuminant).
  *   3) CIEDE2000 — the color-difference formula (Sharma, Wu & Dalal,
  *      2005) used across the paint/textile/print industries because
@@ -24,47 +24,113 @@
   --------------------------------------------------------- */
   const BASE_COLORS = [
     { en: "Red", fa: "قرمز", hex: "#FF0000" },
+    { en: "Scarlet", fa: "قرمز آتشین", hex: "#FF2400" },
     { en: "Crimson", fa: "زرشکی", hex: "#DC143C" },
+    { en: "Ruby", fa: "یاقوتی", hex: "#E0115F" },
+    { en: "Garnet", fa: "لعل", hex: "#9A2A2A" },
     { en: "Maroon", fa: "شرابی", hex: "#800000" },
+    { en: "Burgundy", fa: "بورگاندی", hex: "#800020" },
+    { en: "Wine", fa: "رنگ شراب", hex: "#722F37" },
+    { en: "Rose", fa: "رز", hex: "#FF007F" },
+    { en: "Dusty Rose", fa: "صورتی چرک", hex: "#C08081" },
     { en: "Pink", fa: "صورتی", hex: "#FFC0CB" },
+    { en: "Blush", fa: "صورتی ملایم", hex: "#DE5D83" },
+    { en: "Baby Pink", fa: "صورتی نوزادی", hex: "#F4C2C2" },
     { en: "Hot Pink", fa: "صورتی پرشور", hex: "#FF69B4" },
+    { en: "Fuchsia", fa: "فوشیا", hex: "#FF00AF" },
     { en: "Magenta", fa: "سرخابی", hex: "#FF00FF" },
+    { en: "Plum", fa: "آلویی", hex: "#8E4585" },
+    { en: "Mauve", fa: "یاسی خاکستری", hex: "#E0B0FF" },
+    { en: "Lilac", fa: "یاسی", hex: "#C8A2C8" },
     { en: "Purple", fa: "بنفش", hex: "#800080" },
     { en: "Violet", fa: "ارغوانی", hex: "#8F00FF" },
     { en: "Lavender", fa: "بنفش کم‌رنگ", hex: "#E6E6FA" },
+    { en: "Orchid", fa: "ارکیده‌ای", hex: "#DA70D6" },
+    { en: "Amethyst", fa: "آمتیست", hex: "#9966CC" },
+    { en: "Eggplant", fa: "بادمجانی", hex: "#614051" },
     { en: "Indigo", fa: "نیلی", hex: "#4B0082" },
     { en: "Blue", fa: "آبی", hex: "#0000FF" },
+    { en: "Royal Blue", fa: "آبی سلطنتی", hex: "#4169E1" },
     { en: "Azure", fa: "لاجوردی", hex: "#007FFF" },
+    { en: "Cerulean", fa: "آبی سیرولین", hex: "#007BA7" },
     { en: "Sky Blue", fa: "آبی آسمانی", hex: "#87CEEB" },
+    { en: "Baby Blue", fa: "آبی نوزادی", hex: "#89CFF0" },
+    { en: "Powder Blue", fa: "آبی پودری", hex: "#B0E0E6" },
     { en: "Navy", fa: "سرمه‌ای", hex: "#000080" },
+    { en: "Midnight Blue", fa: "آبی نیمه‌شب", hex: "#191970" },
     { en: "Cobalt Blue", fa: "آبی کبالت", hex: "#0047AB" },
+    { en: "Sapphire", fa: "یاقوت کبود", hex: "#0F52BA" },
+    { en: "Prussian Blue", fa: "آبی پروسی", hex: "#003153" },
+    { en: "Steel Blue", fa: "آبی فولادی", hex: "#4682B4" },
+    { en: "Denim", fa: "جین", hex: "#1560BD" },
     { en: "Turquoise", fa: "فیروزه‌ای", hex: "#40E0D0" },
+    { en: "Aqua", fa: "آکوا", hex: "#00B8D4" },
     { en: "Cyan", fa: "آبی فیروزه‌ای", hex: "#00FFFF" },
     { en: "Teal", fa: "سبزآبی", hex: "#008080" },
+    { en: "Duck Green", fa: "سبز کله‌غازی", hex: "#006A5B" },
     { en: "Petrol", fa: "نفتی", hex: "#1B4D4D" },
+    { en: "Jade", fa: "یشمی", hex: "#00A86B" },
+    { en: "Jade Green", fa: "سبز یشمی", hex: "#2BAE66" },
+    { en: "Mint", fa: "نعنایی", hex: "#98FF98" },
+    { en: "Seafoam", fa: "سبز کف دریایی", hex: "#93E9BE" },
     { en: "Green", fa: "سبز", hex: "#008000" },
     { en: "Emerald", fa: "زمردی", hex: "#50C878" },
     { en: "Forest Green", fa: "سبز جنگلی", hex: "#228B22" },
+    { en: "Pine Green", fa: "سبز کاجی", hex: "#01796F" },
+    { en: "Moss Green", fa: "سبز خزه‌ای", hex: "#8A9A5B" },
+    { en: "Sage", fa: "سبز مریم‌گلی", hex: "#9CAF88" },
+    { en: "Sage Green", fa: "سبز سیج", hex: "#87A96B" },
     { en: "Lime Green", fa: "سبز چمنی", hex: "#32CD32" },
+    { en: "Chartreuse", fa: "سبز مایل به زرد", hex: "#7FFF00" },
     { en: "Olive", fa: "زیتونی", hex: "#808000" },
+    { en: "Avocado", fa: "آووکادویی", hex: "#568203" },
+    { en: "Celadon", fa: "سلادون", hex: "#ACE1AF" },
+    { en: "Pistachio Green", fa: "سبز پسته‌ای", hex: "#93C572" },
     { en: "Khaki", fa: "خاکی", hex: "#C3B091" },
     { en: "Yellow", fa: "زرد", hex: "#FFFF00" },
+    { en: "Lemon", fa: "لیمویی", hex: "#FFF44F" },
     { en: "Amber", fa: "کهربایی", hex: "#FFBF00" },
     { en: "Mustard", fa: "خردلی", hex: "#FFDB58" },
     { en: "Butter Yellow", fa: "زرد کره‌ای", hex: "#F5E8AA" },
+    { en: "Canary", fa: "زرد قناری", hex: "#FFFF99" },
+    { en: "Maize", fa: "ذرتی", hex: "#FBEC5D" },
+    { en: "Saffron", fa: "زعفرانی", hex: "#F4C430" },
     { en: "Orange", fa: "نارنجی", hex: "#FFA500" },
+    { en: "Tangerine", fa: "نارنگی", hex: "#F28500" },
+    { en: "Apricot", fa: "زردآلویی", hex: "#FBCEB1" },
     { en: "Coral", fa: "مرجانی", hex: "#FF7F50" },
     { en: "Salmon", fa: "صورتی‌نارنجی", hex: "#FA8072" },
     { en: "Peach", fa: "هلویی", hex: "#FFE5B4" },
+    { en: "Terracotta", fa: "سفالی", hex: "#E2725B" },
+    { en: "Rust", fa: "زنگاری", hex: "#B7410E" },
+    { en: "Burnt Orange", fa: "نارنجی سوخته", hex: "#CC5500" },
     { en: "Brown", fa: "قهوه‌ای", hex: "#8B4513" },
     { en: "Chocolate", fa: "شکلاتی", hex: "#7B3F00" },
     { en: "Chestnut", fa: "شاه‌بلوطی", hex: "#954535" },
+    { en: "Coffee", fa: "قهوه‌ای قهوه", hex: "#6F4E37" },
+    { en: "Walnut", fa: "گردویی", hex: "#5C4033" },
+    { en: "Cinnamon", fa: "دارچینی", hex: "#D2691E" },
+    { en: "Caramel", fa: "کاراملی", hex: "#C68E17" },
+    { en: "Honey", fa: "عسلی", hex: "#D49A2A" },
+    { en: "Camel", fa: "شتری", hex: "#C19A6B" },
     { en: "Beige", fa: "بژ", hex: "#F5F5DC" },
     { en: "Tan", fa: "قهوه‌ای روشن", hex: "#D2B48C" },
+    { en: "Sand", fa: "شنی", hex: "#C2B280" },
+    { en: "Ecru", fa: "اکرو", hex: "#CDB891" },
+    { en: "Taupe", fa: "تاپ", hex: "#483C32" },
+    { en: "Greige", fa: "گریژ", hex: "#B0A999" },
     { en: "Ivory", fa: "عاجی", hex: "#FFFFF0" },
     { en: "Cream", fa: "کرم", hex: "#FFFDD0" },
+    { en: "Vanilla", fa: "وانیلی", hex: "#F3E5AB" },
+    { en: "Champagne", fa: "شامپاینی", hex: "#F7E7CE" },
+    { en: "Pearl", fa: "مرواریدی", hex: "#EAE0C8" },
+    { en: "Alabaster", fa: "مرمر سفید", hex: "#EDEAE0" },
     { en: "Charcoal", fa: "زغالی", hex: "#36454F" },
     { en: "Gray", fa: "خاکستری", hex: "#808080" },
+    { en: "Slate Gray", fa: "خاکستری سنگی", hex: "#708090" },
+    { en: "Ash Gray", fa: "خاکستری دودی", hex: "#B2BEB5" },
+    { en: "Smoke", fa: "دودی", hex: "#738276" },
+    { en: "Graphite", fa: "گرافیتی", hex: "#383838" },
   ];
 
   const FIXED_COLORS = [
@@ -72,8 +138,10 @@
     { en: "Black", fa: "سیاه", hex: "#000000" },
     { en: "Silver", fa: "نقره‌ای", hex: "#C0C0C0" },
     { en: "Gold", fa: "طلایی", hex: "#FFD700" },
+    { en: "Rose Gold", fa: "رزگلد", hex: "#B76E79" },
     { en: "Bronze", fa: "برنزی", hex: "#CD7F32" },
     { en: "Copper", fa: "مسی", hex: "#B87333" },
+    { en: "Platinum", fa: "پلاتینی", hex: "#E5E4E2" },
   ];
 
   const VARIANTS = [
@@ -83,6 +151,16 @@
     { enPre: "Dark ", faSuf: " تیره", dS: 6, dL: -18 },
     { enPre: "Very Dark ", faSuf: " بسیار تیره", dS: 10, dL: -32 },
   ];
+
+  const MORE_VARIANTS = [
+    { enPre: "Pale ", faSuf: " کمرنگ", dS: -12, dL: 12 },
+    { enPre: "Deep ", faSuf: " عمیق", dS: 8, dL: -8 },
+    { enPre: "Muted ", faSuf: " ملایم", dS: -10, dL: 0 },
+    { enPre: "Vivid ", faSuf: " زنده", dS: 15, dL: 0 },
+    { enPre: "Pastel ", faSuf: " پاستلی", dS: -15, dL: 15 },
+  ];
+
+  const ALL_VARIANTS = [...VARIANTS, ...MORE_VARIANTS];
 
   /* ---------------------------------------------------------
      2) Color-space helpers
@@ -279,13 +357,13 @@
   }
 
   /* ---------------------------------------------------------
-     4) Build the full color list (211 entries) with Lab
+     4) Build the full color list with Lab
         pre-computed once, then expose the matcher.
   --------------------------------------------------------- */
   function buildColorList() {
     const list = [];
     for (const c of BASE_COLORS) {
-      for (const v of VARIANTS) {
+      for (const v of ALL_VARIANTS) {
         const hex = v.enPre === "" ? c.hex : variantHex(c.hex, v.dS, v.dL);
         const entry = { en: v.enPre + c.en, fa: c.fa + v.faSuf, hex };
         entry.lab = rgbToLab(...hexToRgb(hex));
