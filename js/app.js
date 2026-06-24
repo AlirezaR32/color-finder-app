@@ -36,6 +36,12 @@
   const historyEl = document.getElementById("history");
   const flipBtn = document.getElementById("flipBtn");
   const retryBtn = document.getElementById("retryBtn");
+  const searchBtn = document.getElementById("searchBtn");
+  const colorBrowser = document.getElementById("colorBrowser");
+  const cbClose = document.getElementById("cbClose");
+  const cbSearch = document.getElementById("cbSearch");
+  const cbGrid = document.getElementById("cbGrid");
+  const cbCount = document.getElementById("cbCount");
 
   /* ---------------------------------------------------------
      State
@@ -238,6 +244,96 @@
     if (document.hidden) stopSampling();
     else if (isLive) startSampling();
   });
+
+  /* ---------------------------------------------------------
+     Color browser / search
+  --------------------------------------------------------- */
+  let cbBuilt = false;
+
+  function copyText(text) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).catch(() => fallbackCopy(text));
+    } else {
+      fallbackCopy(text);
+    }
+  }
+  function fallbackCopy(text) {
+    const ta = document.createElement("textarea");
+    ta.value = text;
+    ta.style.position = "fixed";
+    ta.style.opacity = "0";
+    document.body.appendChild(ta);
+    ta.select();
+    try {
+      document.execCommand("copy");
+    } catch (e) {
+      /* clipboard unsupported — swatch tap still shows the hex visually */
+    }
+    document.body.removeChild(ta);
+  }
+
+  function buildColorGrid() {
+    cbGrid.innerHTML = "";
+    window.ColorEngine.COLOR_LIST.forEach((entry) => {
+      const item = document.createElement("button");
+      item.className = "cb-item";
+      item.dataset.en = entry.en.toLowerCase();
+      item.dataset.fa = entry.fa;
+
+      const swatch = document.createElement("div");
+      swatch.className = "cb-swatch";
+      swatch.style.background = entry.hex;
+      const check = document.createElement("span");
+      check.className = "check";
+      check.textContent = "کپی شد";
+      swatch.appendChild(check);
+
+      const nameFaEl = document.createElement("span");
+      nameFaEl.className = "cb-name-fa";
+      nameFaEl.textContent = entry.fa;
+
+      const nameEnEl = document.createElement("span");
+      nameEnEl.className = "cb-name-en";
+      nameEnEl.textContent = entry.en + " · " + entry.hex;
+
+      item.appendChild(swatch);
+      item.appendChild(nameFaEl);
+      item.appendChild(nameEnEl);
+
+      item.addEventListener("click", () => {
+        copyText(entry.hex);
+        swatch.classList.add("copied");
+        setTimeout(() => swatch.classList.remove("copied"), 700);
+      });
+
+      cbGrid.appendChild(item);
+    });
+    cbBuilt = true;
+  }
+
+  function filterColorGrid() {
+    const q = cbSearch.value.trim().toLowerCase();
+    let visible = 0;
+    cbGrid.querySelectorAll(".cb-item").forEach((item) => {
+      const match = !q || item.dataset.en.includes(q) || item.dataset.fa.includes(q);
+      item.style.display = match ? "" : "none";
+      if (match) visible++;
+    });
+    cbCount.textContent = visible + " / " + window.ColorEngine.COLOR_LIST.length;
+  }
+
+  searchBtn.addEventListener("click", () => {
+    if (!cbBuilt) buildColorGrid();
+    filterColorGrid();
+    colorBrowser.hidden = false;
+    setTimeout(() => cbSearch.focus(), 50);
+  });
+
+  cbClose.addEventListener("click", () => {
+    colorBrowser.hidden = true;
+  });
+
+  cbSearch.addEventListener("input", filterColorGrid);
 
   /* ---------------------------------------------------------
      Boot
